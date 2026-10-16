@@ -1,8 +1,39 @@
 import streamlit as st
 
-st.title("My First Streamlit Application")
+st.title("Product Prospect Form")          # 1. title
 
-user_name = st.text_input("Enter your name")
+with st.form("prospect_form"):            # 2. everything inside is one form
+    product_name = st.text_input("Product name")                       # one-line box
+    prospect_company_url = st.text_input("Company website")
+    product_category = st.text_input("Product category")
+    competitor_urls = st.text_area("Competitor URLs (one per line)")  # multi-line box
+    value_proposition = st.text_area("Value Proposition (one sentence)")  # multi-line box
+    Target_customer = st.text_input("Name or role of target customer")
+    product_overview = st.file_uploader("Product overview (PDF, TXT, or MD)", type=["txt", "md", "pdf"])
+    submitted = st.form_submit_button("Submit")                # 3. the button
 
-if st.button("Submit"):
-    st.write(f"Hello, {user_name}!")
+if submitted:                              # 4. runs only after clicking Submit
+    errors = []                            # collect problems here
+
+    if not product_name.strip():
+        errors.append("Product name is required.")
+    if not prospect_company_url.strip():
+        errors.append("Company website is required.")
+    if not product_category.strip():
+        errors.append("Product category is required.")
+    if not Target_customer.strip():
+        errors.append("Target customer is required.")
+    if not value_proposition.strip():
+        errors.append("Value proposition is required.")
+    if errors:
+        for e in errors:
+            st.error(e)
+    else:
+        st.success("Submitted!")
+        st.write("Product:", product_name)
+        st.write("Company website:", prospect_company_url)
+        st.write("Product category:", product_category)
+        st.write("Competitor URLs:", competitor_urls)
+        st.write("Value Proposition:", value_proposition)
+        st.write("Target Customer:", Target_customer)
+        st.write("Product Overview:", product_overview.name if product_overview else "No file uploaded")
