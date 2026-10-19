@@ -1,4 +1,10 @@
 import streamlit as st
+from urllib.parse import urlparse
+
+def is_valid_url(text):
+    parts = urlparse(text.strip())
+    return parts.scheme in ("http", "https") and bool(parts.netloc)
+
 
 st.title("Product Prospect Form")          # 1. title
 
@@ -8,7 +14,7 @@ with st.form("prospect_form"):            # 2. everything inside is one form
     product_category = st.text_input("Product category")
     competitor_urls = st.text_area("Competitor URLs (one per line)")  # multi-line box
     value_proposition = st.text_area("Value Proposition (one sentence)")  # multi-line box
-    Target_customer = st.text_input("Name or role of target customer")
+    target_customer = st.text_input("Name or role of target customer")
     product_overview = st.file_uploader("Product overview (PDF, TXT, or MD)", type=["txt", "md", "pdf"])
     submitted = st.form_submit_button("Submit")                # 3. the button
 
@@ -19,12 +25,15 @@ if submitted:                              # 4. runs only after clicking Submit
         errors.append("Product name is required.")
     if not prospect_company_url.strip():
         errors.append("Company website is required.")
+    elif not is_valid_url(prospect_company_url):
+        errors.append("Please enter a valid company website URL.")
     if not product_category.strip():
         errors.append("Product category is required.")
-    if not Target_customer.strip():
+    if not target_customer.strip():
         errors.append("Target customer is required.")
     if not value_proposition.strip():
         errors.append("Value proposition is required.")
+    
     if errors:
         for e in errors:
             st.error(e)
@@ -35,5 +44,6 @@ if submitted:                              # 4. runs only after clicking Submit
         st.write("Product category:", product_category)
         st.write("Competitor URLs:", competitor_urls)
         st.write("Value Proposition:", value_proposition)
-        st.write("Target Customer:", Target_customer)
+        st.write("Target Customer:", target_customer)
         st.write("Product Overview:", product_overview.name if product_overview else "No file uploaded")
+
