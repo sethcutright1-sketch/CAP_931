@@ -44,7 +44,7 @@ if __name__ == "__main__":
         "https://corporate.bestbuy.com/executive-team/",
         "https://investors.bestbuy.com/",
         "https://jobs.bestbuy.com/bby?id=all_jobs",
-        "https://not-a-url"
+        "not-a-url"
     ]
 
     for url in test_urls:
