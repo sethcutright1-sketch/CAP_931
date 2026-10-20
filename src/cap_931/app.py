@@ -20,8 +20,7 @@ with st.form("prospect_form"):            # 2. everything inside is one form
 
 if submitted:                              # 4. runs only after clicking Submit
     errors = []                            # collect problems here
-
-    if not product_name.strip():
+     if not product_name.strip():
         errors.append("Product name is required.")
     if not prospect_company_url.strip():
         errors.append("Company website is required.")
@@ -33,7 +32,19 @@ if submitted:                              # 4. runs only after clicking Submit
         errors.append("Target customer is required.")
     if not value_proposition.strip():
         errors.append("Value proposition is required.")
-    
+
+    competitor_list = []
+    lines = competitor_urls.splitlines()
+    for line in lines:
+        stripped_line = line.strip()
+        if stripped_line:
+            competitor_list.append(stripped_line)
+    if not competitor_list:
+        errors.append("At least one competitor URL is required.")
+    else:
+        for url in competitor_list:
+            if not is_valid_url(url):
+                errors.append(f"Invalid competitor URL: {url}")
     if errors:
         for e in errors:
             st.error(e)
@@ -42,7 +53,8 @@ if submitted:                              # 4. runs only after clicking Submit
         st.write("Product:", product_name)
         st.write("Company website:", prospect_company_url)
         st.write("Product category:", product_category)
-        st.write("Competitor URLs:", competitor_urls)
+        for url in competitor_list:
+            st.write("-", url)
         st.write("Value Proposition:", value_proposition)
         st.write("Target Customer:", target_customer)
         st.write("Product Overview:", product_overview.name if product_overview else "No file uploaded")
