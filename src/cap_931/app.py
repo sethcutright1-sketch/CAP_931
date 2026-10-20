@@ -20,7 +20,7 @@ with st.form("prospect_form"):            # 2. everything inside is one form
 
 if submitted:                              # 4. runs only after clicking Submit
     errors = []                            # collect problems here
-     if not product_name.strip():
+    if not product_name.strip():
         errors.append("Product name is required.")
     if not prospect_company_url.strip():
         errors.append("Company website is required.")
