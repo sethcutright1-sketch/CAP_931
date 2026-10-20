@@ -38,12 +38,13 @@ def fetch_page_text(url: str, max_chars: int = 6000) -> str:
     if len(trimmed_text) < 200:
         return f"Page loaded but has no readable text (probably JavaScript-rendered) at {url}"
     return trimmed_text
+
 if __name__ == "__main__":
     test_urls = [
-        "corporate.bestbuy.com/executive-team/",
-        "investors.bestbuy.com/",
-        "jobs.bestbuy.com/bby?id=all_jobs",
-        "not-a-url" 
+        "https://corporate.bestbuy.com/executive-team/",
+        "https://investors.bestbuy.com/",
+        "https://jobs.bestbuy.com/bby?id=all_jobs",
+        "https://not-a-url"
     ]
 
     for url in test_urls:
