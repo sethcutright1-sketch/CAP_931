@@ -18,7 +18,7 @@ def ask_llm(prompt, model="claude-haiku-5-5"):
         return response.content[0].text
     except Exception as e:
         print(f"Error occurred: {e}")
-        return f"An error occurred while processing your request.: {e}"
+        return f"An error occurred while processing your request: {e}"
 
 if __name__ == "__main__":
     print(ask_llm("Reply with the single word: ready"))
