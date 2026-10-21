@@ -18,7 +18,7 @@ def ask_llm(prompt, model="claude-haiku-5-5"):
         for block in response.content:
             if block.type == "text":
                 return block.text
-        return "No answer came back."    
+        return "No answer came back."  
     except Exception as e:
         print(f"Error occurred: {e}")
         return f"An error occurred while processing your request: {e}"
