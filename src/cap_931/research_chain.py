@@ -23,6 +23,15 @@ def summarize_sources(urls, competitors):
 
     return results
 
+def build_summaries_block(results, competitors):
+    pieces = []
+    for url, summary in results:
+        if url in competitors:
+            page_type = "competitor page"
+        else:
+            page_type = "company page"
+        pieces.append(f"Source: {url} ({page_type})\nSummary: {summary}")
+    return "\n-------------------------------------------\n".join(pieces)
 
 if __name__ == "__main__":
     test_urls = [
@@ -42,3 +51,9 @@ if __name__ == "__main__":
         print(f"URL: {url}")
         print(f"SUMMARY: {summary}")
         print("-" * 30)
+
+    summaries_block = build_summaries_block(results, competitors)
+    print("\n" + "=" * 50)
+    print("COMBINED SUMMARIES")
+    print("=" * 50)
+    print(summaries_block)
