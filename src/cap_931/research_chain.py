@@ -37,7 +37,10 @@ if __name__ == "__main__":
     test_urls = [
         "https://corporate.bestbuy.com/executive-team/",
         "https://investors.bestbuy.com/",
-        "https://corporate.bestbuy.com/careers/"  # Added the jobs page
+        "https://corporate.bestbuy.com/careers/", 
+        "https://store.google.com/",
+        "https://www.samsung.com/us/smart-home/",
+        "https://corporate.bestbuy.com/about-best-buy/"
     ]
 
     competitors = [
