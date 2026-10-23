@@ -1,7 +1,8 @@
 # imports
 from web_research import fetch_page_text
-from prompts import build_summary_prompt
+from prompts import build_summary_prompt, build_sections_prompt
 from llm_client import ask_llm
+
 
 
 def summarize_sources(urls, competitors):
@@ -33,30 +34,40 @@ def build_summaries_block(results, competitors):
         pieces.append(f"Source: {url} ({page_type})\nSummary: {summary}")
     return "\n-------------------------------------------\n".join(pieces)
 
+def build_report(results, company, customer_role, category, value_proposition, competitors):
+    summaries_block = build_summaries_block(results, competitors)
+
+    prompt = build_sections_prompt(company=company, customer_role=customer_role, category=category, value_proposition=value_proposition, competitors=competitors, summaries_block=summaries_block)
+    return ask_llm(prompt)
+
 if __name__ == "__main__":
-    test_urls = [
-        "https://corporate.bestbuy.com/executive-team/",
-        "https://investors.bestbuy.com/",
-        "https://corporate.bestbuy.com/careers/", 
-        "https://store.google.com/",
-        "https://www.samsung.com/us/smart-home/",
-        "https://corporate.bestbuy.com/about-best-buy/"
+    fake_results = [
+        ("https://corporate.bestbuy.com/executive-team/",
+         "- [Strategy] Four priorities: advance as a retail, media and advertising, and technology company; expand and grow reach; elevate the customer experience; and be a human-powered, customer-focused company.\n"
+         "- [Leadership] Jason Bonfig, incoming chief executive officer\n"
+         "- [Leadership] Frank Bedo, chief strategy and growth officer"),
+        ("https://corporate.bestbuy.com/about-best-buy/",
+         "- [Strategy] Best Buy's stated purpose is \"to enrich lives through technology.\"\n"
+         "- [Competitors] No relevant information on this page."),
+        ("https://store.google.com/",
+         "- [Product/Technology] Google Home app lets users control smart home devices from anywhere."),
+        ("https://www.samsung.com/us/smart-home/",
+         "- [Product/Technology] SmartThings app lets users connect, control and automate their smart home from one app."),
+        ("https://corporate.bestbuy.com/careers/",
+         "SOURCE UNAVAILABLE: Failed to fetch https://corporate.bestbuy.com/careers/: Received status code 404"),
     ]
 
     competitors = [
         "https://store.google.com/",
         "https://www.samsung.com/us/smart-home/"
     ]
-
-    results = summarize_sources(test_urls, competitors)
-
-    for url, summary in results:
-        print(f"URL: {url}")
-        print(f"SUMMARY: {summary}")
-        print("-" * 30)
-
-    summaries_block = build_summaries_block(results, competitors)
-    print("\n" + "=" * 50)
-    print("COMBINED SUMMARIES")
-    print("=" * 50)
-    print(summaries_block)
+    
+    brief = build_report(
+        results=fake_results,
+        company="Best Buy",
+        customer_role="VP of Product, Digital Experience",
+        category="household organization and smart-home software",
+        value_proposition="Hestia is a subscription-based household organizer that adds ongoing value for customers using their new or existing smart-home hardware through private, connected planning and management tools.",
+        competitors=competitors,
+    )
+    print(brief)

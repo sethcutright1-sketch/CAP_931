@@ -60,7 +60,9 @@ Rules
 - Ignore lines that say exactly "No relevant information on this page."
 - Every bullet point must end with its source in this format: (Source: url).
 - Combine duplicate facts and list all relevant URLs at the end of the bullet.
-- Map [Product/Technology] notes to "Product/Strategy Summary".
+- For [Product/Technology] notes, check the page type shown next to the source.
+- If the page type is "company page", put the note under "Product/Strategy Summary".
+- If the page type is "competitor page", put the note under "Competitor products (from their own pages)", and never under "Product/Strategy Summary".
 - Distinguish between what {company} says about competitors and what competitors say about themselves.
 - For sections with no relevant information, write "No information available". If there are no unavailable sources in Limitations, write "None".
 - Article Links and Limitations do not require source suffixes. Include only URLs that contributed facts in Article Links.
