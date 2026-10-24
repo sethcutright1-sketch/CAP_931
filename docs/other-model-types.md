@@ -1,0 +1,7 @@
+# Other Model Types
+
+Design notes for the optional enhancement "how would you use different types of models". Nothing in this file is built; it describes planned work.
+
+To automate the creation of a presentation, I would use a model that generates structured slide content, where each slide corresponds to a specific section like strategy or leadership. The model's job would be to reformat and summarize the pre-defined headings and bullet points from the brief rather than conducting new research. Crucially, a human would still need to verify names, dates, and titles to ensure every claim remains accurately linked to its source.
+
+For the uploaded documents, the "Product overview" field already accepts PDF, text, and Markdown files, though the app does not yet process these uploads. I plan to use a model to extract key data from these files, such as product features and pricing, to populate the product section or inform the value proposition. To optimize this, I would use different models for different tasks: a smaller, more efficient model for the simple task of extracting labeled facts from a single page, and a larger, more capable model for the complex task of merging multiple sources into a consistent, customer-ready style. Currently, both steps use the same small model; my model comparison will measure whether that smaller model is sufficient for the first step and whether the second step requires a more capable model.
