@@ -66,6 +66,9 @@ Rules
 - Distinguish between what {company} says about competitors and what competitors say about themselves.
 - For sections with no relevant information, write "No information available". If there are no unavailable sources in Limitations, write "None".
 - Article Links and Limitations do not require source suffixes. Include only URLs that contributed facts in Article Links.
+- Include only facts that help a sales rep pitch a household organizer that handles household organization, smart-home integration, budgeting, meal planning, pantry, grocery ordering, family and chores, and automation. Leave out facts that do not relate to these. "This rule doesn't apply to leadership."
+- Write at most 10 bullets per section. If more facts qualify, keep the 10 most relevant.
+- when working on the Leadership section, prioritize choosing the CEO first, then executives whose roles involve product, digital, customer experience, services, or strategy.
 
 Use this Markdown structure:
 
