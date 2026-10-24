@@ -1,6 +1,6 @@
 # imports
 from web_research import fetch_page_text
-from prompts import build_summary_prompt, build_sections_prompt
+from prompts import build_summary_prompt, build_sections_prompt, system_prompt
 from llm_client import ask_llm
 
 
@@ -19,7 +19,7 @@ def summarize_sources(urls, competitors):
             continue
 
         prompt = build_summary_prompt(url, page, competitors)
-        summary = ask_llm(prompt)
+        summary = ask_llm(prompt, system=system_prompt)
         results.append((url, summary))
 
     return results
@@ -38,7 +38,7 @@ def build_report(results, company, customer_role, category, value_proposition, c
     summaries_block = build_summaries_block(results, competitors)
 
     prompt = build_sections_prompt(company=company, customer_role=customer_role, category=category, value_proposition=value_proposition, competitors=competitors, summaries_block=summaries_block)
-    return ask_llm(prompt)
+    return ask_llm(prompt, system=system_prompt)
 
 def run_pipeline(company_urls, company, customer_role, category, value_proposition, competitors):
     allurls = company_urls + competitors

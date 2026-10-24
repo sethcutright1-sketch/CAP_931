@@ -14,7 +14,6 @@ def fetch_page_text(url: str, max_chars: int = 6000) -> str:
         # Perform the request with a timeout and browser-like headers
         response = requests.get(url, timeout=30, headers=headers)
         
-        # Check if the status code is 200
         if response.status_code != 200:
             return f"Failed to fetch {url}: Received status code {response.status_code}"
 
