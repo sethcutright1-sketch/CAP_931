@@ -1,5 +1,6 @@
 import streamlit as st
 from urllib.parse import urlparse
+from research_chain import run_pipeline
 
 def is_valid_url(text):
     parts = urlparse(text.strip())
@@ -9,7 +10,8 @@ def is_valid_url(text):
 st.title("Product Prospect Form")          # 1. title
 
 with st.form("prospect_form"):            # 2. everything inside is one form
-    product_name = st.text_input("Product name")                       # one-line box
+    product_name = st.text_input("Product name")
+    company_name = st.text_input("Company name")                       # one-line box
     prospect_company_url = st.text_input("Company website")
     product_category = st.text_input("Product category")
     competitor_urls = st.text_area("Competitor URLs (one per line)")  # multi-line box
@@ -32,6 +34,8 @@ if submitted:                              # 4. runs only after clicking Submit
         errors.append("Target customer is required.")
     if not value_proposition.strip():
         errors.append("Value proposition is required.")
+    if not company_name.strip():
+        errors.append("Company name is required.")
 
     competitor_list = []
     lines = competitor_urls.splitlines()
@@ -50,7 +54,21 @@ if submitted:                              # 4. runs only after clicking Submit
             st.error(e)
     else:
         st.success("Submitted!")
+
+        with st.spinner("Researching the account..."):
+               brief = run_pipeline(
+                   company_urls=[prospect_company_url],
+                   competitors=competitor_list,
+                   company=company_name,
+                   customer_role=target_customer,
+                   category=product_category,
+                   value_proposition=value_proposition,
+               )
+
+        st.success("Research complete!")
+        st.markdown(brief)
         st.write("Product:", product_name)
+        st.write("Company name:", company_name)
         st.write("Company website:", prospect_company_url)
         st.write("Product category:", product_category)
         for url in competitor_list:
