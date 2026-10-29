@@ -11,6 +11,7 @@ from llm_client import ask_llm, usage_log
 # SETTINGS
 MODELS        = ["claude-haiku-5-5", "claude-sonnet-5-5"]
 RUNS_PER_MODEL = 1
+PRODUCT_NAME = "Hestia"
 COMPANY_URLS  = ["https://corporate.bestbuy.com/executive-team/", "https://corporate.bestbuy.com/about-best-buy/"]
 COMPETITORS   = ["https://store.google.com/", "https://www.samsung.com/us/smart-home/"]
 COMPANY   = "Best Buy"
@@ -34,11 +35,11 @@ def run_once(step1_model, step2_model):
         if text.startswith("Failed") or text.startswith("Request failed") or text.startswith("Page loaded but has no readable text"):
             results.append((url, "SOURCE UNAVAILABLE: " + text))
         else:
-            summary = ask_llm(build_summary_prompt(url=url, page_text=text, competitors=COMPETITORS), model=step1_model, system=system_prompt)
+            summary = ask_llm(build_summary_prompt(url=url, page_text=text, competitors=COMPETITORS, product_name=PRODUCT_NAME), model=step1_model, system=system_prompt)
             results.append((url, summary))
     block = build_summaries_block(results, COMPETITORS)
     prompt = build_sections_prompt(company=COMPANY, customer_role=CUSTOMER_ROLE, category=CATEGORY,
-                                   value_proposition=VALUE_PROPOSITION, competitors=COMPETITORS, summaries_block=block)
+            value_proposition=VALUE_PROPOSITION, competitors=COMPETITORS, summaries_block=block, product_name=PRODUCT_NAME)
     brief = ask_llm(prompt, model=step2_model, system=system_prompt)
     seconds = time.perf_counter() - start
     return brief, seconds, list(usage_log)

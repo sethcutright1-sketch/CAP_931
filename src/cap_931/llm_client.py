@@ -25,12 +25,14 @@ def ask_llm(prompt, model="claude-haiku-5-5", system=None):
         usage_log.append({
             "model": model,
             "input_tokens": response.usage.input_tokens,
-            "output_tokens": response.usage.output_tokens,
-        })
-        for block in response.content:
-            if block.type == "text":
-                return block.text
-        return "No answer came back."  
+            "output_tokens": response.usage.output_tokens, 
+            })
+        print(f"[ask_llm] model={model} stop_reason={response.stop_reason} output_tokens={response.usage.output_tokens}")
+        
+        texts = [block.text for block in response.content if block.type == "text"]
+        if texts:
+            return "".join(texts)
+        return "No answer came back."
         
     except Exception as e:
         print(f"Error occurred: {e}")

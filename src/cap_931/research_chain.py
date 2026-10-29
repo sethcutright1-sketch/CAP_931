@@ -5,7 +5,7 @@ from llm_client import ask_llm
 
 
 
-def summarize_sources(urls, competitors):
+def summarize_sources(urls, competitors, product_name):
     """Takes a list of URLs and the competitor URLs.
        Returns a list of (url, summary) pairs."""
 
@@ -18,7 +18,7 @@ def summarize_sources(urls, competitors):
             results.append((url, "SOURCE UNAVAILABLE: " + page))
             continue
 
-        prompt = build_summary_prompt(url, page, competitors)
+        prompt = build_summary_prompt(url, page, competitors, product_name)
         summary = ask_llm(prompt, system=system_prompt)
         results.append((url, summary))
 
@@ -34,18 +34,18 @@ def build_summaries_block(results, competitors):
         pieces.append(f"Source: {url} ({page_type})\nSummary: {summary}")
     return "\n-------------------------------------------\n".join(pieces)
 
-def build_report(results, company, customer_role, category, value_proposition, competitors):
+def build_report(results, company, customer_role, category, value_proposition, competitors, product_name):
     summaries_block = build_summaries_block(results, competitors)
 
-    prompt = build_sections_prompt(company=company, customer_role=customer_role, category=category, value_proposition=value_proposition, competitors=competitors, summaries_block=summaries_block)
+    prompt = build_sections_prompt(company=company, customer_role=customer_role, category=category, value_proposition=value_proposition, competitors=competitors, summaries_block=summaries_block, product_name=product_name)
     return ask_llm(prompt, system=system_prompt)
 
-def run_pipeline(company_urls, company, customer_role, category, value_proposition, competitors):
+def run_pipeline(company_urls, company, customer_role, category, value_proposition, competitors, product_name):
     allurls = company_urls + competitors
-    results = summarize_sources(allurls, competitors)
+    results = summarize_sources(allurls, competitors, product_name)
     if all(summary.startswith("SOURCE UNAVAILABLE") for _, summary in results):
         return "All sources are unavailable."
-    return build_report(results, company, customer_role, category, value_proposition, competitors)
+    return build_report(results, company, customer_role, category, value_proposition, competitors, product_name)
 
 
 if __name__ == "__main__":
@@ -59,6 +59,6 @@ if __name__ == "__main__":
         "https://www.samsung.com/us/smart-home/"
     ]
     
-    brief = run_pipeline(company_urls, "Best Buy", "VP of Product, Digital Experience", "household organization and smart-home software", "Hestia is a subscription-based household organizer that adds ongoing value for customers using their new or existing smart-home hardware through private, connected planning and management tools.", competitors)
+    brief = run_pipeline(company_urls, "Best Buy", "VP of Product, Digital Experience", "household organization and smart-home software", "Hestia is a subscription-based household organizer that adds ongoing value for customers using their new or existing smart-home hardware through private, connected planning and management tools.", competitors, "Hestia")
     
     print(brief)

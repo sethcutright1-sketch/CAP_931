@@ -63,6 +63,7 @@ if submitted:                              # 4. runs only after clicking Submit
                    customer_role=target_customer,
                    category=product_category,
                    value_proposition=value_proposition,
+                   product_name=product_name,
                )
 
         st.success("Research complete!")
