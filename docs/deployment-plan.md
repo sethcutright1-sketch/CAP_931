@@ -22,7 +22,7 @@ Pages change frequently; for example, the Best Buy executive team page may be up
 
 ## 6. Cost & Budget
 
-Each report requires several LLM calls. Based on current testing, I estimate the cost to be about five model calls with a small model, totaling a few cents, to be confirmed by my model comparison. I would implement a monthly spending cap via the model provider’s billing console to ensure costs remain within a predictable budget.
+Each report requires several LLM calls. I measured one report (about five model calls: a summary for each page plus one merge) on 2026-10-28, at Anthropic's prices checked on 2026-10-26. It cost about $0.005 (half a cent) with the small model (claude-haiku-5-5) and about $0.09 with the larger model (claude-sonnet-5-5). Using the small model for the summaries and the larger one for the merge cost about $0.03. At 100 reports a month, that is roughly $0.54 with the small model and $9 with the larger one. I would implement a monthly spending cap via the model provider’s billing console to ensure costs remain within a predictable budget.
 
 ## 7. First three steps I'd take
 

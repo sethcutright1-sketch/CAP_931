@@ -4,6 +4,8 @@ from anthropic import Anthropic
 load_dotenv()
 
 client = Anthropic()
+
+usage_log = []
     
 def ask_llm(prompt, model="claude-haiku-5-5", system=None):
     """
@@ -20,7 +22,11 @@ def ask_llm(prompt, model="claude-haiku-5-5", system=None):
             params["system"] = system
             
         response = client.messages.create(**params)
-        
+        usage_log.append({
+            "model": model,
+            "input_tokens": response.usage.input_tokens,
+            "output_tokens": response.usage.output_tokens,
+        })
         for block in response.content:
             if block.type == "text":
                 return block.text

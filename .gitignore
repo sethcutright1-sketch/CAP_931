@@ -7,5 +7,4 @@ wheels/
 *.egg-info
 .env
 # Virtual environments
-.venv
-compare_models.py
+.venv  

@@ -17,7 +17,7 @@ CAP 931 capstone project, UCI 3025.1 (Per Scholas).
 
 - Python 3.12 or newer
 - [uv](https://docs.astral.sh/uv/) (the Python package and project manager)
-- An Anthropic API key. Each report makes about five model calls, which costs a few cents.
+- An Anthropic API key. Each report makes about five model calls (one summary per page plus one merge). With the default model a report costs about half a cent; see [Model](#model).
 
 ## Setup
 
@@ -43,7 +43,7 @@ From the project folder (the one that contains `pyproject.toml`):
 uv run streamlit run src/cap_931/app.py
 ```
 
-Streamlit prints a local address, usually http://localhost:8501. A report takes about a minute.
+Streamlit prints a local address, usually http://localhost:8501. A report takes about 30 to 45 seconds.
 
 Example values to try:
 
@@ -84,7 +84,7 @@ Example values to try:
 - The briefs were checked by comparing every name, title, date and product mentioned against the real page text.
 - The guardrail was tried with an off-topic request typed into a form field and with a hidden instruction placed inside a fake page. Neither was obeyed.
 
-The test scripts are not included in this repository.
+The model comparison script is `tests/compare_models.py`. It calls the real API, so it prints the number of calls it will make and waits for you to type `yes`. Run it from the project folder with `uv run python tests/compare_models.py`. The other check scripts are not included in this repository.
 
 ## Known limitations
 
@@ -97,8 +97,19 @@ The test scripts are not included in this repository.
 
 ## Model
 
-The default model is `claude-haiku-5-5`, set in `src/cap_931/llm_client.py` (a small, fast, low-cost model). *[Add the model comparison and justification here once it is done.]*
+The default model is `claude-haiku-5-5`, set in `src/cap_931/llm_client.py` (a small, fast, low-cost model). I compared it with `claude-sonnet-5-5` and with a mix (Haiku for the page summaries, Sonnet for the final brief) on the same Best Buy report, using `tests/compare_models.py`. One run each on 2026-10-28; prices from Anthropic's pricing page, checked 2026-10-26.
+
+| Setup | Time | Cost per report | What I saw |
+|---|---|---|---|
+| Haiku for both steps | 34.8 s | $0.0054 | Accurate, but did not mention that Best Buy's CEO leaves on Oct. 31 |
+| Sonnet for both steps | 41.7 s | $0.0926 | Accurate and more complete (the CEO and CFO changes, more executives); about 17 times the cost |
+| Haiku summaries, Sonnet merge | 31.1 s | $0.0284 | Also missed the CEO change: the merge step cannot use facts the summaries dropped |
+
+I checked the facts in all three briefs by hand against the page text, and they were correct. Haiku is the default because it is accurate, fast and costs about half a cent per report. Sonnet is the better choice when a complete brief matters more than the cost. These are single runs on one example, so the differences are observations, not guarantees. The full write-up, including the decision rule and the limits of the test, is in [docs/model-comparison.md](docs/model-comparison.md).
 
 ## More documentation
 
-*[Add the file name or link of the Per Scholas report document here once it is done: experiments, the alert system design, the production deployment plan, and the time log.]*
+- [Alert system design](docs/alert-system-design.md)
+- [Production deployment plan](docs/deployment-plan.md)
+- [Other model types](docs/other-model-types.md)
+- [Model comparison](docs/model-comparison.md)
