@@ -124,6 +124,7 @@ The model comparison script is `tests/compare_models.py`. It calls the real API,
 
 - Pages that build their content with JavaScript (for example the Best Buy careers page) return almost no text to a plain HTTP request, so they cannot be read.
 - Some sites block automated requests. A blocked page is reported under Limitations.
+- Redirects are followed silently. On 2026-10-30 `https://corporate.bestbuy.com/executive-team/` redirected (HTTP 301) to a July 14 news article about executive team updates. The app read the article, but the brief's `(Source: ...)` links still show the address the rep typed. The app does not yet report the final URL when it differs.
 - The form takes one company page. Leadership and strategy coverage depends on which page is given.
 - Results vary slightly from run to run. In some runs the model changed a tense (a future departure written in the past tense) or repeated a word.
 - The optional product-overview upload is accepted by the form but not yet used in the brief.
