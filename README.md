@@ -1,6 +1,6 @@
 # Hestia Sales Research Assistant
 
-A Streamlit app that helps a sales representative prepare to pitch **Hestia** (a household organizer with budgeting, meal planning, pantry tracking, grocery ordering, and a chore chart with rewards for kids) to a prospect company. The rep enters the prospect and its competitors, and the app reads their public web pages and writes a short account brief in which every fact points back to its source page.
+A Streamlit app that helps a sales representative prepare to pitch a product to a prospect company. The rep enters the product (name, category and a one-sentence value proposition), the prospect and its competitors, and the app reads their public web pages and writes a short account brief in which every fact points back to its source page. Nothing in the prompts is tied to one product: the project was built around a household organizer called Hestia, and the same code was also tested with a second, unrelated product.
 
 > **AI assistance note:** this README was drafted by Claude (Anthropic's AI assistant) at the student's request. The application code in `src/cap_931/` was written by the student. Claude was used to explain concepts, review code and help debug.
 
@@ -74,17 +74,51 @@ Example values to try:
 - **Page text is data, not instructions.** Page content is placed between markers and treated as data; the system prompt tells the model to ignore instructions found there.
 - **System prompt guardrail.** The model is limited to sales account research. Off-topic requests are declined.
 - **Failures are reported.** A page that cannot be fetched, or has no readable text, is listed under Limitations and not guessed at.
-- **Relevance and length.** The brief keeps facts that matter for a household-management pitch and limits each section to 10 bullets.
+- **Relevance and length.** The brief keeps facts that help pitch the product described by the category and value proposition the rep entered, and limits each section to 10 bullets. Leadership is exempt from the relevance rule, because a rep needs to know who the decision makers are. Relevance works best when the product and the prospect's business overlap; for an unrelated product the model has less to latch onto.
 
 ## How it was tested
 
+Run the automated tests from the project folder. They never call the model and cost nothing:
+
+```bash
+uv run pytest -v
+```
+
+There are 14 tests in `tests/`:
+
+- `test_prompts.py` checks that the product name reaches both prompts, that no product name is hard-coded, and that no `{placeholder}` is left unfilled.
+- `test_research_chain.py` checks the summaries block: company and competitor pages are tagged correctly, the divider appears only between items, unavailable sources are kept, and the full output matches the expected text.
+- `test_llm_client.py` uses a stand-in client to check that several text blocks are joined, thinking blocks are ignored, a reply with no text returns a fallback message, and the system prompt is sent only when given.
+
+I also broke the code on purpose (for example swapping the page tags or joining text blocks with a space) to confirm each test fails when it should.
+
+Other checks, done by hand or with scripts that are not in this repository:
+
 - The form validation was exercised with eight automated cases (empty fields, invalid URLs, a competitor list with blank lines).
-- The prompt builders were checked offline, without calling the model, so that every value lands in the right place.
-- The request that `llm_client.py` sends to the API was checked with a stand-in client, with and without a system prompt.
 - The briefs were checked by comparing every name, title, date and product mentioned against the real page text.
 - The guardrail was tried with an off-topic request typed into a form field and with a hidden instruction placed inside a fake page. Neither was obeyed.
 
-The model comparison script is `tests/compare_models.py`. It calls the real API, so it prints the number of calls it will make and waits for you to type `yes`. Run it from the project folder with `uv run python tests/compare_models.py`. The other check scripts are not included in this repository.
+The model comparison script is `tests/compare_models.py`. It calls the real API, so it prints the number of calls it will make and waits for you to type `yes`. Run it from the project folder with `uv run python tests/compare_models.py`.
+
+## Implemented and planned
+
+| Feature | Status |
+|---|---|
+| Form with required-field and URL validation | Implemented |
+| Page fetching with clear failure messages | Implemented |
+| Two-step prompt chain (summarize each page, then merge) | Implemented |
+| Source URL on every fact; unreadable pages listed under Limitations | Implemented |
+| Guardrail system prompt and prompt-injection handling | Implemented |
+| Product-neutral prompts (any product, not only Hestia) | Implemented |
+| Cost and token logging per call | Implemented |
+| Model comparison (Haiku, Sonnet, mixed) with documented results | Implemented |
+| Automated tests (14, offline) | Implemented |
+| Product overview upload used in the brief | Planned (the form accepts it, the brief ignores it) |
+| Splitting the work across several agents (one per competitor, plus a reviewer) | Planned, not built |
+| Pages that need JavaScript to load | Planned, not built |
+| Alert system for changes on a watched company | Design only, see [docs/alert-system-design.md](docs/alert-system-design.md) |
+| Production deployment | Design only, see [docs/deployment-plan.md](docs/deployment-plan.md) |
+| Other model types | Design only, see [docs/other-model-types.md](docs/other-model-types.md) |
 
 ## Known limitations
 
