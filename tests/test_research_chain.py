@@ -29,7 +29,7 @@ def test_unavailable_source_is_kept():
     block = build_summaries_block(results, COMPETITORS)
     assert "SOURCE UNAVAILABLE" in block
 
-def test_exact_output_for_two_results():
+def test_exact_output_for_two_results():  
     results = [("https://a.com/", "A"), ("https://c.com/", "C")]
     block = build_summaries_block(results, COMPETITORS)
     expected = (
