@@ -1,7 +1,7 @@
 [project]
 name = "cap-931"
 version = "0.1.0"
-description = "Add your description here"
+description = "Streamlit app that reads a prospect's and its competitors' web pages and writes a sourced sales account brief using Claude."
 readme = "README.md"
 authors = [
     { name = "sethcutright1-sketch", email = "sethcutright1@gmail.com" }
