@@ -8,10 +8,11 @@ CAP 931 capstone project, UCI 3025.1 (Per Scholas).
 
 ## What it does
 
-1. **Form:** the rep enters the product, the company name and website, the product category, competitor URLs (one per line), a one-sentence value proposition, and the target customer. Required fields and URLs are validated.
+1. **Form:** the rep enters the product, the company name and website, the product category, competitor URLs (one per line), a one-sentence value proposition, and the target customer. Required fields and URLs are validated. The rep can also upload a short product overview (TXT or MD) to give the model more context.
 2. **Fetch:** the app downloads each page and strips the scripts and styles, leaving the readable text.
 3. **Summarize:** Claude summarizes each page into short labeled notes (strategy, competitors, leadership, product/technology).
 4. **Merge:** a second prompt combines the notes into one brief with these sections: Company Strategy, Competitor Mentions, Leadership, Product/Strategy Summary, Article Links and Limitations. Every bullet ends with `(Source: <url>)`. Pages that could not be read are listed under Limitations.
+5. **Save:** the brief is shown on the page, and a **Download brief** button saves it as a Markdown file named after the company.
 
 ## Requirements
 
@@ -113,7 +114,9 @@ The model comparison script is `tests/compare_models.py`. It calls the real API,
 | Cost and token logging per call | Implemented |
 | Model comparison (Haiku, Sonnet, mixed) with documented results | Implemented |
 | Automated tests (14, offline) | Implemented |
-| Product overview upload used in the brief | Planned (the form accepts it, the brief ignores it) |
+| Product overview upload (TXT or MD) used in the brief | Implemented (the text goes into the step 2 prompt to help decide which facts are relevant; it is never a source) |
+| Download the brief as a Markdown file | Implemented |
+| Export the brief as Word or PDF | Planned, not built |
 | Splitting the work across several agents (one per competitor, plus a reviewer) | Planned, not built |
 | Pages that need JavaScript to load | Planned, not built |
 | Alert system for changes on a watched company | Design only, see [docs/alert-system-design.md](docs/alert-system-design.md) |
@@ -127,7 +130,8 @@ The model comparison script is `tests/compare_models.py`. It calls the real API,
 - Redirects are followed silently. On 2026-10-30 `https://corporate.bestbuy.com/executive-team/` redirected (HTTP 301) to a July 14 news article about executive team updates. The app read the article, but the brief's `(Source: ...)` links still show the address the rep typed. The app does not yet report the final URL when it differs.
 - The form takes one company page. Leadership and strategy coverage depends on which page is given.
 - Results vary slightly from run to run. In some runs the model changed a tense (a future departure written in the past tense) or repeated a word.
-- The optional product-overview upload is accepted by the form but not yet used in the brief.
+- The optional product-overview upload accepts only TXT and MD files, reads the first 4,000 characters, and is used only in step 2 as context for relevance. A check with a stand-in model confirmed the text reaches the prompt, but I have not compared real briefs with and without an overview, so its effect on the brief is untested.
+- The brief can be downloaded as a Markdown (`.md`) file. Word and PDF export are not built.
 - The system prompt is a guardrail, not a security guarantee.
 
 ## Model
