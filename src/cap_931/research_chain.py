@@ -34,18 +34,18 @@ def build_summaries_block(results, competitors):
         pieces.append(f"Source: {url} ({page_type})\nSummary: {summary}")
     return "\n-------------------------------------------\n".join(pieces)
 
-def build_report(results, company, customer_role, category, value_proposition, competitors, product_name):
+def build_report(results, company, customer_role, category, value_proposition, competitors, product_name, product_overview=""):
     summaries_block = build_summaries_block(results, competitors)
 
-    prompt = build_sections_prompt(company=company, customer_role=customer_role, category=category, value_proposition=value_proposition, competitors=competitors, summaries_block=summaries_block, product_name=product_name)
+    prompt = build_sections_prompt(company=company, customer_role=customer_role, category=category, value_proposition=value_proposition, competitors=competitors, summaries_block=summaries_block, product_name=product_name, product_overview=product_overview)
     return ask_llm(prompt, system=system_prompt)
 
-def run_pipeline(company_urls, company, customer_role, category, value_proposition, competitors, product_name):
+def run_pipeline(company_urls, company, customer_role, category, value_proposition, competitors, product_name, product_overview=""):
     allurls = company_urls + competitors
     results = summarize_sources(allurls, competitors, product_name)
     if all(summary.startswith("SOURCE UNAVAILABLE") for _, summary in results):
         return "All sources are unavailable."
-    return build_report(results, company, customer_role, category, value_proposition, competitors, product_name)
+    return build_report(results, company, customer_role, category, value_proposition, competitors, product_name, product_overview)
 
 
 if __name__ == "__main__":

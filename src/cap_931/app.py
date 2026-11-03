@@ -17,7 +17,7 @@ with st.form("prospect_form"):            # 2. everything inside is one form
     competitor_urls = st.text_area("Competitor URLs (one per line)")  # multi-line box
     value_proposition = st.text_area("Value Proposition (one sentence)")  # multi-line box
     target_customer = st.text_input("Name or role of target customer")
-    product_overview = st.file_uploader("Product overview (PDF, TXT, or MD)", type=["txt", "md", "pdf"])
+    product_overview = st.file_uploader("Product overview (TXT or MD)", type=["txt", "md", ])
     submitted = st.form_submit_button("Submit")                # 3. the button
 
 if submitted:                              # 4. runs only after clicking Submit
@@ -54,6 +54,9 @@ if submitted:                              # 4. runs only after clicking Submit
             st.error(e)
     else:
         st.success("Submitted!")
+        overview_text = ""
+        if product_overview:
+            overview_text = product_overview.read().decode("utf-8", errors="ignore")[:4000]
 
         with st.spinner("Researching the account..."):
                brief = run_pipeline(
@@ -64,6 +67,7 @@ if submitted:                              # 4. runs only after clicking Submit
                    category=product_category,
                    value_proposition=value_proposition,
                    product_name=product_name,
+                   product_overview=overview_text,
                )
 
         st.success("Research complete!")
