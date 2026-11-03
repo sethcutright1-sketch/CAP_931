@@ -67,7 +67,14 @@ if submitted:                              # 4. runs only after clicking Submit
                )
 
         st.success("Research complete!")
-        st.markdown(brief)
+        st.markdown(brief) 
+        st.download_button(
+            label="Download brief",
+            data=brief,
+            file_name=f"{company_name.replace(' ', '_')}_brief.md",
+            mime="text/markdown",
+            on_click="ignore",
+        )
         st.write("Product:", product_name)
         st.write("Company name:", company_name)
         st.write("Company website:", prospect_company_url)
